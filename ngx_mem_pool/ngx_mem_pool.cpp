@@ -165,7 +165,7 @@ void* ngx_mem_pool::ngx_palloc_large(size_t size) {
     return p;
 }
 
-//  释放大块内存
+//  释放指定大块内存
 void ngx_mem_pool::ngx_pfree(void* p) {
     ngx_pool_large_s* l;
 

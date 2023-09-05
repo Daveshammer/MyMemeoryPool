@@ -25,6 +25,7 @@ struct stData
 };
 
 int main() {
+    // 1.创建内存池
     // 512 - sizeof(ngx_pool_t) - 4095   =>   max
     ngx_mem_pool mempool;
     //  ngx_create_pool的代码逻辑可以直接实现在mempool的构造函数中
@@ -34,6 +35,7 @@ int main() {
         return -1;
     }
 
+    // 2.分配小块内存及外部资源
     void* p1 = mempool.ngx_palloc(128); // 从小块内存池分配的
     if (p1 == nullptr)
     {
@@ -41,6 +43,7 @@ int main() {
         return -1;
     }
 
+    // 3.分配大块内存及外部资源
     stData* p2 = (stData*)mempool.ngx_palloc(512); // 从大块内存池分配的
     if (p2 == nullptr)
     {
@@ -51,7 +54,7 @@ int main() {
     strcpy_s(p2->ptr, 12, "hello world");  //堆中ptr指向堆区字符串  
     fopen_s(&p2->pfile, "1.txt", "w");  //堆中pfile指向磁盘文件
 
-    //调用回调函数进行内存释放
+    //预置回调函数用于资源释放
     ngx_pool_cleanup_s* c1 = mempool.ngx_pool_cleanup_add(sizeof(char*));
     c1->handler = func1;
     c1->data = p2->ptr;
